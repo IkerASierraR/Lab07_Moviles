@@ -7,7 +7,6 @@ import android.net.NetworkCapabilities
 import androidx.annotation.RequiresPermission
 
 object NetworkUtils {
-
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     fun isNetworkAvialable(context: Context): Boolean{
         val connectivityManager =
@@ -15,9 +14,9 @@ object NetworkUtils {
                 ?: return false
 
         val network = connectivityManager.activeNetwork ?: return false
-        val capabilites = connectivityManager.getNetworkCapabilities(network) ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
 
-        return capabilites.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                capabilites.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }
