@@ -9,7 +9,7 @@ data class BookEntity(
     @PrimaryKey val key: String,
     val title: String,
     val authorName: String,
-    val firstPulishYear: Int,
+    val firstPublishYear: Int,
     val coverId: Long,
     val isbn: String,
     val publisher: String,

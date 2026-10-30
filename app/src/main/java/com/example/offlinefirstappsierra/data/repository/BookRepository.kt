@@ -42,7 +42,7 @@ class BookRepository (
                 key= dto.key,
                 title = dto.title?:"Sin título",
                 authorName = dto.authorName?.firstOrNull()?:"Autor desconocido",
-                firstPulishYear = dto.firstPublishYear ?:0,
+                firstPublishYear = dto.firstPublishYear ?:0,
                 coverId = dto.coverId ?:0,
                 isbn = dto.isbnList?.firstOrNull() ?: "",
                 publisher = dto.publisherList?.firstOrNull() ?: "Editorial no especificada",
