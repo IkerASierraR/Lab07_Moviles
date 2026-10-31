@@ -134,7 +134,7 @@ class BookViewModel(
     }
 
     class Factory(private val application: Application): ViewModelProvider.Factory{
-        @Suppress("UNCHECKED_CAST")
+        @Suppress("INCHECKED_CAST")
         override fun <T: ViewModel> create(modelClass: Class<T>):T{
             val db = AppDatabase.getDatabase(application)
             val repository = BookRepository(db.bookDao(), RetrofitClient.api)

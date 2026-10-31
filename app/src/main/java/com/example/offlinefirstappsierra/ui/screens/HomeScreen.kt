@@ -15,26 +15,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SignalWifiOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -42,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -93,7 +96,9 @@ fun HomeScreen(
         modifier = modifier
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             //Indicador del estado de red
             AnimatedVisibility(visible = uiState.isOffline) {
@@ -103,7 +108,8 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -122,121 +128,181 @@ fun HomeScreen(
                 }
             }
 
-            OutlinedTextField(
-                value = uiState.searchQuery,
-                onValueChange = { viewModel.onQueryChange(it) },
+            Surface(
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 2.dp,
                 modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                placeholder = { Text("Buscar libros por título o autor") },
-                leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-                trailingIcon = {
-                    if (uiState.searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.onQueryChange("") }) {
-                            Icon(imageVector = Icons.Default.Clear, contentDescription = "Limpiar búsqueda")
-                        }
-                    }
-                },
-                singleLine = true,
-                shape = MaterialTheme.shapes.large,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    focusManager.clearFocus()
-                    viewModel.performSearch()
-                })
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterChip(
-                    selected = uiState.filterMode == FilterMode.ALL,
-                    onClick = { viewModel.setFilterMode(FilterMode.ALL) },
-                    label = { Text("Todos") },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.LibraryBooks, contentDescription = null,
-                            modifier = Modifier.size(18.dp))
-                    }
-                )
-                FilterChip(
-                    selected = uiState.filterMode == FilterMode.FAVORITES,
-                    onClick = { viewModel.setFilterMode(FilterMode.FAVORITES) },
-                    label = { Text("Favoritos") },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = null,
-                            modifier = Modifier.size(18.dp))
-                    }
-                )
-            }
+                Column(modifier = Modifier.padding(16.dp)){
+                    OutlinedTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = {viewModel.onQueryChange(it)},
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = {Text("Buscar libros (ej. android, c#, php, tolkien). . .")},
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Buscar"
+                            )
+                        },
+                        trailingIcon = {
+                            if(uiState.searchQuery.isNotEmpty()){
+                                IconButton(onClick = {viewModel.onQueryChange("")}) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = "Limpiar"
+                                    )
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                focusManager.clearFocus()
+                                viewModel.performSearch()
+                            }
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    )
 
-            if (uiState.isLoading) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
-                )
-            }
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            uiState.errorMessage?.let { message ->
-                Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
-                ) {
                     Row(
-                        modifier = Modifier.padding(start = 12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = message,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.weight(1f)
+                        FilterChip(
+                            selected = uiState.filterMode == FilterMode.ALL,
+                            onClick = {viewModel.setFilterMode(FilterMode.ALL)},
+                            label = {Text("Todos (${uiState.books.size})")},
+                            leadingIcon = {
+                                Icon(
+                                    imageVector =  Icons.Default.MenuBook,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
                         )
-                        TextButton(onClick = { viewModel.clearError() }) {
-                            Text("OK")
-                        }
+
+                        FilterChip(
+                            selected = uiState.filterMode == FilterMode.FAVORITES,
+                            onClick = {viewModel.setFilterMode(FilterMode.FAVORITES)},
+                            label = {Text("Favoritos")},
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = Color(0xFFE91e63)
+                                )
+                            }
+                        )
                     }
                 }
             }
 
-            if (uiState.books.isEmpty() && !uiState.isLoading) {
+            if(uiState.isLoading){
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+
+            if(uiState.errorMessage != null && !uiState.isOffline){
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer.copy(0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = uiState.errorMessage ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+
+            if(uiState.books.isEmpty() && !uiState.isLoading){
                 Box(
                     modifier = Modifier.fillMaxSize().padding(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (uiState.filterMode == FilterMode.FAVORITES)
-                            "Aún no tienes libros favoritos."
-                        else
-                            "No hay libros para mostrar. Realiza una búsqueda.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.outline,
-                        textAlign = TextAlign.Center
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = if(uiState.filterMode == FilterMode.FAVORITES) Icons.Default.Favorite else Icons.Default.CloudDownload,
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.outline
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = if(uiState.filterMode == FilterMode.FAVORITES){
+                                "No tienes libros guardados como Favoritos"
+                            } else{
+                                "No se encontraron libros en la cache local para \"${uiState.searchQuery}\"."
+                            },
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = if(uiState.isOffline) {
+                                "Conectate a Internet para buscar y guardar nuevos libros desde Open Library. "
+                            } else{
+                                "Presiona la tecla Buscar en el teclado o el boton de refrescar arriba para consultar Open Library API"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+
+
+
+                    }
                 }
-            } else {
+            } else{
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+
                 ) {
-                    items(uiState.books, key = { it.key }) { book ->
+                    items(
+                        items = uiState.books,
+                        key = { it.key }
+                    ){book ->
                         BookCard(
                             book = book,
-                            onBookClick = { viewModel.selectBook(it) },
-                            onFavoriteToggle = { viewModel.toggleFavorite(it) }
+                            onBookClick = {viewModel.selectBook(it)},
+                            onFavoriteToggle = {viewModel.toggleFavorite(it)}
                         )
+
                     }
-                    item { Spacer(modifier = Modifier.height(8.dp)) }
                 }
             }
+
         }
 
-        uiState.selectedBook?.let { selected ->
-            val book = uiState.books.find { it.key == selected.key } ?: selected
+        uiState.selectedBook?.let { book ->
             BookDetailDialog(
                 book = book,
-                onDismiss = { viewModel.selectBook(null) },
-                onFavoriteToggle = { viewModel.toggleFavorite(it) }
+                onDismiss = {viewModel.selectBook(null)},
+                onFavoriteToggle = {viewModel.toggleFavorite(it)}
             )
         }
     }

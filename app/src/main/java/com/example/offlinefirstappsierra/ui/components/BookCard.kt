@@ -1,5 +1,8 @@
 package com.example.offlinefirstappsierra.ui.components
 
+import android.R
+import android.icu.text.ListFormatter
+import android.widget.Space
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.util.TableInfo
 import coil.compose.AsyncImage
 
 import com.example.offlinefirstappsierra.data.local.BookEntity
@@ -96,12 +100,12 @@ fun BookCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
                     text = "Autor: ${book.authorName}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -147,7 +151,7 @@ fun BookCard(
                 label = "FavoriteColor"
             )
 
-            IconButton(onClick = { onFavoriteToggle(book) }) {
+            IconButton(onClick = {onFavoriteToggle}) {
                 Icon(
                     imageVector = if(book.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = if(book.isFavorite)"Quitar de favoritos" else "Agregar a favoritos",

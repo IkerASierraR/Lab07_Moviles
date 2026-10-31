@@ -90,7 +90,7 @@ fun BookDetailDialog (
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Cerrar")
                     }
                 }
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Box(modifier = Modifier
                         .size(width = 130.dp, height = 190.dp)
@@ -123,7 +123,7 @@ fun BookDetailDialog (
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.width(6.dp))
 
                 Text(
                     text = "Por: ${book.authorName}",

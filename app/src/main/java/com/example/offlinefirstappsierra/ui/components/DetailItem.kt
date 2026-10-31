@@ -1,5 +1,6 @@
 package com.example.offlinefirstappsierra.ui.components
 
+import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
